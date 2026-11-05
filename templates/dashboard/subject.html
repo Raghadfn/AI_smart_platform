@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}{{ subject.name_ar }} - منصة هندسة المعلوماتية{% endblock %}
+
+{% block nav_links %}
+{% include "components/nav_authenticated.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="app-theme app-theme-shell">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    {% include "components/breadcrumb.html" %}
+
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-2">{{ subject.name_ar }}</h1>
+        <p class="text-slate-500">{{ subject.name_en }}</p>
+        {% if subject.specialization %}
+        <span class="inline-flex items-center mt-2 px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-50 text-teal-800 border border-teal-200">
+            {{ subject.specialization.name_ar }}
+        </span>
+        {% endif %}
+        {% if subject.description_ar %}
+        <p class="text-slate-600 mt-3 max-w-2xl leading-relaxed">{{ subject.description_ar }}</p>
+        {% endif %}
+    </div>
+
+    <div class="space-y-4">
+        {% for item in lectures_data %}
+        {% with lecture=item.lecture %}
+        <a href="{% url 'lectures_web:detail_by_id' lecture_id=lecture.id %}"
+           class="app-card block bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-5 shadow-md hover:shadow-xl hover:border-teal-200 transition group">
+            <div class="flex items-start justify-between gap-4">
+                <div class="flex-grow">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-8 h-8 bg-teal-50 border border-teal-100 rounded-xl flex items-center justify-center text-teal-800 font-extrabold text-sm">
+                            {{ lecture.order }}
+                        </span>
+                        <h2 class="text-lg font-extrabold text-slate-900 group-hover:text-teal-700 transition">
+                            {{ lecture.title_ar }}
+                        </h2>
+                    </div>
+                    {% if lecture.title_en %}
+                    <p class="text-slate-500 text-sm mb-2">{{ lecture.title_en }}</p>
+                    {% endif %}
+                    <div class="flex flex-wrap items-center gap-4 text-xs text-slate-400">
+                        {% if lecture.duration_minutes %}
+                        <span>{{ lecture.duration_minutes }} دقيقة</span>
+                        {% endif %}
+                        {% if lecture.pdf_file %}
+                        <span class="flex items-center gap-1">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                            PDF
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="flex-shrink-0 w-24 text-center">
+                    {% if item.status == "completed" %}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-100 text-emerald-800">
+                        مكتمل
+                    </span>
+                    {% elif item.status == "in_progress" %}
+                    <div class="text-xs text-slate-500 mb-1 font-medium">{{ item.progress_percent }}%</div>
+                    <div class="w-full bg-slate-200 rounded-full h-2">
+                        <div class="bg-teal-600 h-2 rounded-full" style="width: {{ item.progress_percent }}%"></div>
+                    </div>
+                    {% else %}
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 text-slate-600">
+                        لم يبدأ
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+        {% endwith %}
+        {% empty %}
+        <div class="text-center py-16 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 shadow-md">
+            <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <p class="text-slate-500 mb-2">لا توجد محاضرات منشورة في هذه المادة.</p>
+            <p class="text-slate-400 text-sm">يمكن للمسؤول إضافة المحاضرات من لوحة الإدارة.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</div>
+{% endblock %}

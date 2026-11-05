@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}مساحة عمل الزائر - {{ session_info.filename }}{% endblock %}
+
+{% block extra_css %}
+{% include "components/theme_styles.html" %}
+{% endblock %}
+
+{% block nav_links %}
+<a href="{% url 'guest_web:upload' %}" class="text-sm font-medium text-slate-600 hover:text-teal-700 transition">رفع ملف جديد</a>
+<a href="/" class="text-sm font-semibold px-4 py-2 rounded-xl bg-teal-700 text-white hover:bg-teal-800 hover:scale-105 transition-all">الرئيسية</a>
+{% endblock %}
+
+{% block content %}
+<div class="app-theme app-theme-shell">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+        <!-- معلومات الملف -->
+        <div class="app-card bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-6 mb-6 shadow-md hover:shadow-xl">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 bg-teal-50 border border-teal-100 rounded-2xl flex items-center justify-center flex-shrink-0 text-teal-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-teal-700 mb-1">وضع الزائر</p>
+                        <h1 class="text-xl font-extrabold text-slate-900">{{ session_info.filename }}</h1>
+                        <p class="text-sm text-slate-500 mt-1">
+                            {{ session_info.page_count }} صفحة ·
+                            {{ session_info.text_length|floatformat:0 }} حرف مستخرج ·
+                            {{ session_info.extraction_method }}
+                        </p>
+                    </div>
+                </div>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-800 rounded-xl text-xs font-bold border border-emerald-200">
+                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                    جاهز للاستخدام
+                </span>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+            <!-- لوحة الأدوات -->
+            <div class="lg:col-span-1">
+                <div class="app-card bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-6 sticky top-4 shadow-md hover:shadow-xl" id="guest-ai-panel"
+                     data-upload-id="{{ upload_id }}">
+
+                    <h2 class="text-lg font-extrabold text-slate-900 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-teal-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                        أدوات الذكاء الاصطناعي
+                    </h2>
+
+                    <p class="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4 leading-relaxed">
+                        وضع الزائر: 5 طلبات AI في الساعة · النتائج غير محفوظة
+                    </p>
+
+                    <div class="space-y-2 mb-4">
+                        <button type="button" data-tool="summarize"
+                            class="guest-tool-btn w-full py-2.5 px-4 bg-slate-50 hover:bg-teal-50 text-slate-700 hover:text-teal-800 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 border border-slate-200 hover:border-teal-200 hover:shadow-md">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            تلخيص
+                        </button>
+                        <button type="button" data-tool="ask"
+                            class="guest-tool-btn w-full py-2.5 px-4 bg-slate-50 hover:bg-cyan-50 text-slate-700 hover:text-cyan-800 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 border border-slate-200 hover:border-cyan-200 hover:shadow-md">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            اسأل سؤالاً
+                        </button>
+                    </div>
+
+                    <div id="guest-tool-options" class="hidden mb-4 p-4 bg-slate-50/90 rounded-2xl border border-slate-200"></div>
+
+                    <div id="guest-loading" class="hidden text-center py-6">
+                        <div class="inline-block w-8 h-8 border-4 border-teal-200 border-t-teal-700 rounded-full animate-spin"></div>
+                        <p class="text-sm text-slate-500 mt-3">جاري المعالجة...</p>
+                    </div>
+
+                    <div id="guest-error" class="hidden p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm"></div>
+                </div>
+            </div>
+
+            <!-- منطقة النتائج -->
+            <div class="lg:col-span-2">
+                <div class="app-card bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-6 min-h-[400px] shadow-md hover:shadow-xl" id="guest-result-panel">
+                    <div id="guest-result-empty" class="flex flex-col items-center justify-center h-80 text-slate-400">
+                        <svg class="w-16 h-16 mb-4 opacity-50 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                        <p class="text-lg font-bold text-slate-600">اختر أداة من القائمة</p>
+                        <p class="text-sm mt-1 text-slate-400">ستظهر النتائج هنا</p>
+                    </div>
+
+                    <div id="guest-result-area" class="hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-extrabold text-slate-800" id="guest-result-title">النتيجة</h3>
+                            <button type="button" id="guest-clear-result" class="text-xs font-medium text-slate-400 hover:text-red-500 transition">مسح</button>
+                        </div>
+                        <div id="guest-result-content" class="text-slate-700 leading-relaxed whitespace-pre-wrap"></div>
+                        <p id="guest-result-meta" class="text-xs text-slate-400 mt-4"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/api.js"></script>
+<script src="/static/js/guest.js"></script>
+{% endblock %}

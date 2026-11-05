@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}الملف الشخصي - منصة هندسة المعلوماتية{% endblock %}
+
+{% block nav_links %}
+{% include "components/nav_authenticated.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="app-theme app-theme-shell">
+<div class="max-w-2xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-6">الملف الشخصي</h1>
+
+    <div class="app-card bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-6 shadow-md hover:shadow-xl space-y-1">
+        <div class="flex justify-between items-center py-3 border-b border-slate-100">
+            <span class="text-slate-500 text-sm font-medium">اسم المستخدم</span>
+            <span class="font-bold text-slate-900" dir="ltr">{{ user.username }}</span>
+        </div>
+        <div class="flex justify-between items-center py-3 border-b border-slate-100">
+            <span class="text-slate-500 text-sm font-medium">الاسم الكامل</span>
+            <span class="font-bold text-slate-900">
+                {% if profile %}{{ profile.full_name_ar }}{% else %}{{ user.get_full_name|default:user.username }}{% endif %}
+            </span>
+        </div>
+        {% if profile and profile.student_id %}
+        <div class="flex justify-between items-center py-3 border-b border-slate-100">
+            <span class="text-slate-500 text-sm font-medium">الرقم الجامعي</span>
+            <span class="font-bold text-slate-900" dir="ltr">{{ profile.student_id }}</span>
+        </div>
+        {% endif %}
+        <div class="flex justify-between items-center py-3 border-b border-slate-100">
+            <span class="text-slate-500 text-sm font-medium">الدور</span>
+            <span class="font-bold text-slate-900">{{ user.get_role_display }}</span>
+        </div>
+        {% if profile %}
+        <div class="flex justify-between items-center py-3 border-b border-slate-100">
+            <span class="text-slate-500 text-sm font-medium">اللغة المفضلة</span>
+            <span class="font-bold text-slate-900">{{ profile.get_preferred_language_display }}</span>
+        </div>
+        {% endif %}
+        <div class="flex justify-between items-center py-3">
+            <span class="text-slate-500 text-sm font-medium">تاريخ الانضمام</span>
+            <span class="font-bold text-slate-900">{{ user.date_joined|date:"Y/m/d" }}</span>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

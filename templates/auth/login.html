@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}تسجيل الدخول - منصة هندسة المعلوماتية{% endblock %}
+
+{% block nav_links %}
+<a href="{% url 'accounts_web:landing' %}" class="text-sm font-medium text-slate-600 hover:text-teal-700 transition">الرئيسية</a>
+<a href="/guest/"
+   class="text-sm font-semibold px-4 py-2 rounded-xl bg-teal-700 text-white hover:bg-teal-800 hover:scale-105 transition-all">
+    الدخول كزائر
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="app-theme app-theme-shell">
+    <div class="min-h-[calc(100vh-8rem)] flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-md">
+            <div class="app-card bg-white/90 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200 p-8">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 bg-teal-50 border border-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-teal-700">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </div>
+                    <p class="text-teal-700 font-extrabold text-sm mb-1">منصة هندسة المعلوماتية</p>
+                    <h1 class="text-2xl font-extrabold text-slate-900">تسجيل الدخول</h1>
+                    <p class="text-slate-500 mt-2 text-sm">منصة كلية هندسة المعلوماتية التعليمية</p>
+                </div>
+
+                <form method="post" action="{% url 'accounts_web:login' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" class="space-y-5">
+                    {% csrf_token %}
+
+                    <div>
+                        <label for="id_username" class="block text-sm font-bold text-slate-700 mb-2">
+                            {{ form.username.label }}
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ form.username.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <label for="id_password" class="block text-sm font-bold text-slate-700 mb-2">
+                            {{ form.password.label }}
+                        </label>
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                        <p class="text-red-600 text-sm mt-1">{{ form.password.errors.0 }}</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="flex items-center">
+                        {{ form.remember_me }}
+                        <label for="id_remember_me" class="me-2 text-sm text-slate-600 cursor-pointer">
+                            {{ form.remember_me.label }}
+                        </label>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full py-3.5 px-4 bg-teal-700 text-white font-bold rounded-2xl shadow-md hover:bg-teal-800 hover:shadow-xl hover:scale-[1.02] focus:ring-4 focus:ring-teal-200 transition-all">
+                        دخول
+                    </button>
+                </form>
+
+                <div class="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-2xl">
+                    <p class="text-amber-800 text-sm text-center leading-relaxed">
+                        <svg class="w-4 h-4 inline-block ms-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        الحسابات تُنشأ من قبل المسؤول فقط. تواصل مع المبرمج للحصول على بيانات الدخول.
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-center mt-6 text-slate-600 text-sm">
+                لست مسجلاً؟
+                <a href="/guest/" class="text-teal-700 font-bold hover:underline">جرّب وضع الزائر</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

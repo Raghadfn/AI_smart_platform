@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}لوحة التحكم - منصة هندسة المعلوماتية{% endblock %}
+
+{% block extra_css %}
+{% include "components/theme_styles.html" %}
+{% endblock %}
+
+{% block nav_links %}
+{% include "components/nav_authenticated.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="app-theme app-theme-shell">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
+        <!-- ترحيب -->
+        <div class="relative overflow-hidden rounded-2xl p-8 sm:p-10 text-white mb-8 shadow-xl border border-teal-800/20">
+            <div class="absolute inset-0 bg-gradient-to-l from-teal-800 via-teal-700 to-slate-900" aria-hidden="true"></div>
+            <div class="absolute inset-0 opacity-30 bg-[radial-gradient(ellipse_at_top_left,_rgba(255,255,255,0.22),_transparent_55%)]" aria-hidden="true"></div>
+            <div class="relative">
+                <p class="text-teal-100/90 text-sm font-bold mb-2">منصة هندسة المعلوماتية</p>
+                <h1 class="text-3xl sm:text-4xl font-extrabold mb-2">مرحباً، {{ user_display_name }}</h1>
+                <p class="text-teal-50/90 text-base sm:text-lg max-w-2xl leading-relaxed">
+                    اختر السنة الأكاديمية للوصول إلى المواد والمحاضرات وأدوات الذكاء الاصطناعي.
+                </p>
+            </div>
+        </div>
+
+        <!-- بحث سريع -->
+        <form action="{% url 'curriculum_web:search' %}" method="get" class="mb-8">
+            <div class="relative max-w-xl">
+                <input type="search" name="q" placeholder="ابحث في المحاضرات..."
+                    class="w-full px-5 py-3.5 pe-12 rounded-2xl border border-slate-200 bg-white/90 backdrop-blur-md shadow-md focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition">
+                <button type="submit" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-teal-700 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </button>
+            </div>
+        </form>
+
+        <div class="mb-6">
+            <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mb-1">السنوات الأكاديمية</h2>
+            <p class="text-sm text-slate-600">تصفح المواد والمحاضرات حسب السنة</p>
+        </div>
+
+        <!-- شبكة السنوات -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {% for year in years %}
+            <a href="{% url 'curriculum_web:year' year_slug=year.slug %}"
+               class="app-card bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-6 shadow-md hover:shadow-xl hover:border-teal-200 transition group block">
+                <div class="w-12 h-12 bg-teal-50 border border-teal-100 rounded-2xl flex items-center justify-center mb-4 group-hover:bg-teal-100 transition">
+                    <span class="text-teal-800 font-extrabold text-lg">{{ year.order }}</span>
+                </div>
+                <h2 class="text-xl font-extrabold text-slate-900 mb-1">{{ year.name_ar }}</h2>
+                <p class="text-slate-500 text-sm mb-4">{{ year.name_en }}</p>
+                <p class="text-slate-400 text-xs mb-4">
+                    {% if year.order >= 4 %}
+                    3 اختصاصات · فصلان
+                    {% else %}
+                    {{ year.subject_total }} مادة · فصلان
+                    {% endif %}
+                </p>
+                <span class="inline-flex items-center text-teal-700 font-bold text-sm group-hover:text-teal-800 transition">
+                    عرض المواد
+                    <svg class="w-4 h-4 me-1 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </span>
+            </a>
+            {% empty %}
+            <div class="col-span-full text-center py-12 text-slate-500 bg-white/80 rounded-2xl border border-slate-200 shadow-md">
+                <p>لا توجد سنوات أكاديمية متاحة حالياً.</p>
+                <p class="text-sm mt-2">شغّل: python manage.py seed_curriculum</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

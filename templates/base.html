@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}منصة كلية هندسة المعلوماتية{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        arabic: ['Tajawal', 'IBM Plex Sans Arabic', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        accent: {
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                        },
+                    },
+                },
+            },
+        };
+    </script>
+
+    {% include "components/theme_styles.html" %}
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="font-arabic bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+    <nav class="sticky top-0 z-40 bg-white/80 backdrop-blur-md shadow-sm border-b border-slate-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="text-xl font-extrabold text-teal-800 hover:text-teal-900 transition">
+                    منصة هندسة المعلوماتية
+                </a>
+                <div class="flex items-center gap-3 sm:gap-4">
+                    {% block nav_links %}{% endblock %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% if messages %}
+    <div class="max-w-7xl mx-auto px-4 mt-4 w-full">
+        {% for message in messages %}
+        <div class="p-4 rounded-2xl mb-2 shadow-sm {% if message.tags == 'error' %}bg-red-50 text-red-800 border border-red-200{% elif message.tags == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200{% else %}bg-sky-50 text-sky-800 border border-sky-200{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-white/90 backdrop-blur-md border-t border-slate-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 py-6 text-center text-slate-500 text-sm">
+            <p>© {% now "Y" %} كلية هندسة المعلوماتية - منصة التعليم الذكي</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ lecture.title_ar }} - منصة هندسة المعلوماتية{% endblock %}
+
+{% block nav_links %}
+{% include "components/nav_authenticated.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="app-theme app-theme-shell">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    {% include "components/breadcrumb.html" %}
+
+    <div class="flex flex-col lg:flex-row gap-6">
+        <div class="flex-grow lg:w-[70%]">
+            <div class="app-card bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 overflow-hidden shadow-md hover:shadow-xl transition">
+                <div class="p-6 border-b border-slate-100">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">{{ lecture.title_ar }}</h1>
+                    {% if lecture.title_en %}
+                    <p class="text-slate-500">{{ lecture.title_en }}</p>
+                    {% endif %}
+                    <div class="flex flex-wrap items-center gap-4 mt-4 text-sm text-slate-400">
+                        {% if lecture.duration_minutes %}
+                        <span>{{ lecture.duration_minutes }} دقيقة للقراءة</span>
+                        {% endif %}
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-xs font-bold bg-teal-50 text-teal-800 border border-teal-100">{{ lecture.subject.name_ar }}</span>
+                    </div>
+                </div>
+
+                {% if has_pdf and pdf_embed_url %}
+                <div class="border-b border-slate-100 bg-slate-50">
+                    <iframe
+                        src="{{ pdf_embed_url }}#view=FitH"
+                        class="w-full bg-slate-50 border-0"
+                        style="height: min(78vh, 900px); min-height: 420px;"
+                        title="عرض PDF - {{ lecture.title_ar }}">
+                    </iframe>
+                </div>
+                {% endif %}
+
+                <div id="lecture-content">
+                    {% if has_content %}
+                    {# النص الكامل يبقى في DB/سياق الخلفية لأدوات AI — مخفي عن العرض الأساسي #}
+                    <template id="lecture-extracted-context"
+                              data-available="true"
+                              data-char-count="{{ lecture.content_text|length }}"></template>
+                    <div class="px-6 py-10 text-center">
+                        <p class="text-slate-700 font-bold mb-1">سياق المحاضرة جاهز للمساعد</p>
+                        <p class="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
+                            لن يُعرض النص المستخرج هنا. استخدم أدوات الذكاء الاصطناعي لعرض النتائج عند الطلب فقط.
+                        </p>
+                    </div>
+                    {% elif not has_pdf %}
+                    <div class="px-6 py-12 text-center text-slate-500">
+                        <p>لا يوجد محتوى متاح لهذه المحاضرة حالياً.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <aside class="lg:w-[30%] flex-shrink-0">
+            {% include "components/ai_panel.html" %}
+        </aside>
+    </div>
+</div>
+</div>
+{% endblock %}

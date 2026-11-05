@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}{{ year.name_ar }} - منصة هندسة المعلوماتية{% endblock %}
+
+{% block nav_links %}
+{% include "components/nav_authenticated.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="app-theme app-theme-shell">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    {% include "components/breadcrumb.html" %}
+
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-2">{{ year.name_ar }}</h1>
+        {% if has_specializations %}
+        <p class="text-slate-500">
+            {{ year.name_en }} — {{ subject_count }} مادة · 3 اختصاصات · فصلان دراسيان
+        </p>
+        <p class="text-sm text-teal-700 font-medium mt-2">اختر اختصاصك لعرض المواد المتخصصة</p>
+        {% else %}
+        <p class="text-slate-500">{{ year.name_en }} — {{ subject_count }} مادة دراسية · فصلان دراسيان</p>
+        {% endif %}
+    </div>
+
+    {% if has_specializations %}
+    <div class="mb-8">
+        <div class="flex flex-wrap gap-2 p-1.5 bg-white/80 backdrop-blur-md border border-slate-200 rounded-2xl shadow-sm" id="track-tabs">
+            {% for track in track_data %}
+            <a href="?track={{ track.specialization.slug }}"
+               data-track="{{ track.specialization.slug }}"
+               class="track-tab flex-1 min-w-[140px] py-3 px-4 rounded-xl text-sm font-bold text-center transition
+                      {% if track.is_active %}bg-white text-primary-700 shadow-md border border-teal-100{% else %}text-slate-600 hover:text-slate-800 hover:bg-slate-50{% endif %}">
+                {{ track.specialization.name_ar }}
+            </a>
+            {% endfor %}
+        </div>
+        {% for track in track_data %}
+        {% if track.is_active %}
+        <p class="text-sm text-slate-500 mt-3">{{ track.specialization.description_ar }}</p>
+        {% endif %}
+        {% endfor %}
+    </div>
+
+    {% for track in track_data %}
+    <div class="track-panel {% if not track.is_active %}hidden{% endif %}" data-track="{{ track.specialization.slug }}">
+        {% for section in track.semesters %}
+        <section class="mb-10">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 bg-teal-50 border border-teal-100 rounded-2xl flex items-center justify-center">
+                    <span class="text-teal-800 font-extrabold">{{ section.semester.number }}</span>
+                </div>
+                <div>
+                    <h2 class="text-xl font-extrabold text-slate-900">{{ section.semester.name_ar }}</h2>
+                    <p class="text-sm text-slate-500">{{ track.specialization.name_ar }} — {{ section.subjects|length }} مواد</p>
+                </div>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {% for subject in section.subjects %}
+                <a href="{% url 'curriculum_web:subject' year_slug=year.slug subject_slug=subject.slug %}"
+                   class="app-card bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-5 shadow-md hover:shadow-xl hover:border-teal-200 transition group block">
+                    <div class="w-10 h-10 bg-teal-50 rounded-2xl flex items-center justify-center mb-3">
+                        <svg class="w-5 h-5 text-teal-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-extrabold text-slate-900 mb-1">{{ subject.name_ar }}</h3>
+                    <p class="text-slate-500 text-sm mb-2">{{ subject.name_en }}</p>
+                    <p class="text-slate-400 text-xs">{{ subject.published_lecture_count }} محاضرة</p>
+                </a>
+                {% empty %}
+                <p class="text-slate-500 text-sm col-span-full">لا توجد مواد في هذا الفصل.</p>
+                {% endfor %}
+            </div>
+        </section>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+    {% else %}
+    {% for semester in semesters %}
+    <section class="mb-10">
+        <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 bg-teal-50 border border-teal-100 rounded-2xl flex items-center justify-center">
+                <span class="text-teal-800 font-extrabold">{{ semester.number }}</span>
+            </div>
+            <div>
+                <h2 class="text-xl font-extrabold text-slate-900">{{ semester.name_ar }}</h2>
+                <p class="text-sm text-slate-500">{{ semester.prefetched_subjects|length }} مواد</p>
+            </div>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {% for subject in semester.prefetched_subjects %}
+            <a href="{% url 'curriculum_web:subject' year_slug=year.slug subject_slug=subject.slug %}"
+               class="app-card bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-5 shadow-md hover:shadow-xl hover:border-teal-200 transition group block">
+                <div class="w-10 h-10 bg-teal-50 rounded-2xl flex items-center justify-center mb-3">
+                    <svg class="w-5 h-5 text-teal-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                </div>
+                <h3 class="text-base font-extrabold text-slate-900 mb-1">{{ subject.name_ar }}</h3>
+                <p class="text-slate-500 text-sm mb-2">{{ subject.name_en }}</p>
+                <p class="text-slate-400 text-xs">{{ subject.published_lecture_count }} محاضرة</p>
+            </a>
+            {% empty %}
+            <p class="text-slate-500 text-sm col-span-full">لا توجد مواد في هذا الفصل.</p>
+            {% endfor %}
+        </div>
+    </section>
+    {% empty %}
+    <div class="text-center py-12 text-slate-500 bg-white/80 rounded-2xl border border-slate-200 shadow-md">
+        <p>لا توجد فصول دراسية في هذه السنة.</p>
+    </div>
+    {% endfor %}
+    {% endif %}
+</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if has_specializations %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.track-tab');
+    const panels = document.querySelectorAll('.track-panel');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            if (tab.tagName === 'A') return;
+            e.preventDefault();
+            const track = tab.dataset.track;
+            switchTrack(track);
+            history.replaceState(null, '', `?track=${track}`);
+        });
+    });
+
+    function switchTrack(track) {
+        tabs.forEach(t => {
+            const active = t.dataset.track === track;
+            t.classList.toggle('bg-white', active);
+            t.classList.toggle('shadow-sm', active);
+            t.classList.toggle('text-primary-700', active);
+            t.classList.toggle('text-slate-600', !active);
+        });
+        panels.forEach(p => {
+            p.classList.toggle('hidden', p.dataset.track !== track);
+        });
+    }
+});
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}الدخول كزائر - رفع ملف PDF{% endblock %}
+
+{% block extra_css %}
+{% include "components/theme_styles.html" %}
+{% endblock %}
+
+{% block nav_links %}
+<a href="/" class="text-sm font-medium text-slate-600 hover:text-teal-700 transition">الرئيسية</a>
+<a href="{% url 'accounts_web:login' %}"
+   class="text-sm font-semibold px-4 py-2 rounded-xl bg-teal-700 text-white hover:bg-teal-800 hover:scale-105 transition-all">
+    تسجيل الدخول
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="app-theme app-theme-shell">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-teal-50 border border-teal-100 text-teal-700 shadow-sm mb-5">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+            </div>
+            <p class="text-teal-700 font-extrabold text-lg mb-2">منصة هندسة المعلوماتية</p>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3">الدخول كزائر</h1>
+            <p class="text-slate-600 text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
+                ارفع ملف PDF واستخدم أدوات التلخيص والأسئلة بدون تسجيل — بنفس أسلوب تجربة المنصة الاحترافية.
+            </p>
+        </div>
+
+        {% if session_info %}
+        <div class="mb-6 p-5 bg-white/80 backdrop-blur-md border border-sky-200 rounded-2xl shadow-md">
+            <p class="text-sm text-sky-800 mb-2 font-medium">لديك ملف مرفوع مسبقاً:</p>
+            <p class="font-bold text-slate-900">{{ session_info.filename }}</p>
+            <p class="text-xs text-slate-500 mt-1">{{ session_info.page_count }} صفحة · {{ session_info.text_length|floatformat:0 }} حرف</p>
+            <a href="{% url 'guest_web:workspace' upload_id=session_info.upload_id %}"
+               class="inline-flex items-center gap-1 mt-4 text-sm text-teal-700 font-bold hover:text-teal-800 hover:underline transition">
+                الانتقال إلى مساحة العمل
+                <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm shadow-sm">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="app-card bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-md hover:shadow-xl">
+            <form method="post" enctype="multipart/form-data" id="guest-upload-form">
+                {% csrf_token %}
+
+                <div id="drop-zone"
+                     class="border-2 border-dashed border-slate-300 rounded-2xl p-10 text-center hover:border-teal-400 hover:bg-teal-50/40 transition cursor-pointer">
+                    <svg class="w-12 h-12 text-teal-600/70 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <p class="text-slate-800 font-bold mb-1">اسحب ملف PDF هنا أو انقر للاختيار</p>
+                    <p class="text-sm text-slate-500">الحد الأقصى: 20 ميجابايت · PDF فقط</p>
+                    <input type="file" name="pdf_file" id="pdf-file-input" accept=".pdf,application/pdf"
+                           class="hidden" required>
+                </div>
+
+                <p id="selected-file" class="hidden mt-4 text-sm text-teal-800 text-center font-semibold"></p>
+
+                <button type="submit" id="upload-btn" disabled
+                        class="mt-6 w-full py-3.5 bg-teal-700 text-white rounded-2xl font-bold shadow-md hover:bg-teal-800 hover:shadow-xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2">
+                    <span id="upload-btn-text">رفع ومعالجة الملف</span>
+                    <svg id="upload-spinner" class="hidden w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                </button>
+            </form>
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <div class="app-card p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 shadow-md hover:shadow-xl hover:border-teal-200">
+                <div class="w-11 h-11 rounded-2xl bg-sky-50 text-sky-700 flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </div>
+                <h3 class="font-bold text-slate-900 mb-1">تلخيص ذكي</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">ملخصات قصيرة ومتوسطة ومفصلة لملفك</p>
+            </div>
+            <div class="app-card p-6 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 shadow-md hover:shadow-xl hover:border-teal-200">
+                <div class="w-11 h-11 rounded-2xl bg-cyan-50 text-cyan-800 flex items-center justify-center mb-4">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <h3 class="font-bold text-slate-900 mb-1">اسأل واستفسر</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">أجوبة مبنية على محتوى الملف المرفوع</p>
+            </div>
+        </div>
+
+        <p class="text-center text-xs text-slate-500 mt-8">
+            الملفات مؤقتة وتُحذف تلقائياً بعد 24 ساعة · لا حاجة لحساب
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('pdf-file-input');
+    const selectedFile = document.getElementById('selected-file');
+    const uploadBtn = document.getElementById('upload-btn');
+    const form = document.getElementById('guest-upload-form');
+    const btnText = document.getElementById('upload-btn-text');
+    const spinner = document.getElementById('upload-spinner');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('border-teal-500', 'bg-teal-50/50');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-teal-500', 'bg-teal-50/50');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-teal-500', 'bg-teal-50/50');
+        if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+            handleFileSelect();
+        }
+    });
+
+    fileInput.addEventListener('change', handleFileSelect);
+
+    function handleFileSelect() {
+        const file = fileInput.files[0];
+        if (file) {
+            selectedFile.textContent = `الملف المختار: ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
+            selectedFile.classList.remove('hidden');
+            uploadBtn.disabled = false;
+        }
+    }
+
+    form.addEventListener('submit', () => {
+        uploadBtn.disabled = true;
+        btnText.textContent = 'جاري المعالجة...';
+        spinner.classList.remove('hidden');
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+# ============================================
+# متطلبات منصة كلية هندسة المعلوماتية التعليمية
+# Academic AI Platform - Python Dependencies
+# ============================================
+
+# إطار العمل الأساسي
+Django>=5.0,<6.0
+djangorestframework>=3.15,<4.0
+djangorestframework-simplejwt>=5.3,<6.0
+django-cors-headers>=4.3,<5.0
+
+# قاعدة البيانات
+psycopg2-binary>=2.9,<3.0
+pgvector>=0.3,<1.0
+
+# المهام الخلفية (معالجة PDF والتضمينات)
+celery>=5.3,<6.0
+redis>=5.0,<6.0
+
+# الذكاء الاصطناعي (Hugging Face Inference API)
+huggingface_hub>=0.26,<1.0
+
+# معالجة ملفات PDF (عربي/إنجليزي)
+pymupdf>=1.24,<2.0
+arabic-reshaper>=3.0,<4.0
+python-bidi>=0.4.2,<1.0
+
+# إدارة المتغيرات البيئية
+python-dotenv>=1.0,<2.0
+
+# الخادم الإنتاجي
+gunicorn>=22.0,<24.0
+whitenoise>=6.6,<7.0
+
+# الأمان وتحديد المعدل
+django-ratelimit>=4.1,<5.0
+
+# معالجة الصور
+Pillow>=10.0,<12.0
+
+# أدوات التطوير
+django-debug-toolbar>=4.4,<5.0

@@ -1,0 +1,21 @@
+{# مكون مسار التنقل - Breadcrumb #}
+{% if breadcrumb %}
+<nav class="mb-6" aria-label="مسار التنقل">
+    <ol class="flex flex-wrap items-center gap-2 text-sm text-slate-500">
+        {% for item in breadcrumb %}
+        <li class="flex items-center gap-2">
+            {% if not forloop.first %}
+            <svg class="w-4 h-4 text-slate-300 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+            {% endif %}
+            {% if item.url %}
+            <a href="{{ item.url }}" class="hover:text-teal-700 font-medium transition">{{ item.label }}</a>
+            {% else %}
+            <span class="text-slate-900 font-bold">{{ item.label }}</span>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ol>
+</nav>
+{% endif %}

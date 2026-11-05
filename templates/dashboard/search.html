@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}نتائج البحث - منصة هندسة المعلوماتية{% endblock %}
+
+{% block nav_links %}
+{% include "components/nav_authenticated.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="app-theme app-theme-shell">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">نتائج البحث</h1>
+    {% if query %}
+    <p class="text-slate-500 mb-6">نتائج البحث عن: <strong class="text-slate-800">"{{ query }}"</strong></p>
+    {% endif %}
+
+    <div class="space-y-4">
+        {% for lecture in lectures %}
+        <a href="{% url 'lectures_web:detail_by_id' lecture_id=lecture.id %}"
+           class="app-card block bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 p-5 shadow-md hover:shadow-xl hover:border-teal-200 transition">
+            <h2 class="text-lg font-extrabold text-slate-900 mb-1">{{ lecture.title_ar }}</h2>
+            <p class="text-slate-500 text-sm">
+                {{ lecture.subject.year.name_ar }} — {{ lecture.subject.name_ar }}
+            </p>
+            {% if lecture.content_text %}
+            <p class="text-slate-400 text-sm mt-2 line-clamp-2">{{ lecture.content_text|truncatechars:200 }}</p>
+            {% endif %}
+        </a>
+        {% empty %}
+        <div class="text-center py-16 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 shadow-md">
+            <p class="text-slate-500">لم يتم العثور على محاضرات.</p>
+            {% if query %}
+            <a href="{% url 'accounts_web:dashboard' %}" class="text-teal-700 font-bold text-sm mt-4 inline-block hover:underline">
+                العودة إلى لوحة التحكم
+            </a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</div>
+{% endblock %}

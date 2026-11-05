@@ -1,0 +1,49 @@
+{# أنماط بصرية مشتركة لصفحات المنصة (تصميم فقط) #}
+<style>
+    .app-theme {
+        --brand: #0f766e;
+        --brand-deep: #115e59;
+        font-family: 'Tajawal', 'IBM Plex Sans Arabic', sans-serif;
+    }
+
+    .app-theme-shell {
+        position: relative;
+        isolation: isolate;
+        min-height: calc(100vh - 8rem);
+        background:
+            radial-gradient(ellipse 80% 50% at 8% 0%, rgba(20, 184, 166, 0.14), transparent 55%),
+            radial-gradient(ellipse 60% 40% at 95% 5%, rgba(37, 99, 235, 0.10), transparent 50%),
+            linear-gradient(180deg, #ecfeff 0%, #f8fafc 38%, #f1f5f9 100%);
+    }
+
+    .app-theme-shell::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        opacity: 0.35;
+        pointer-events: none;
+        background-image:
+            linear-gradient(rgba(15, 23, 42, 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(15, 23, 42, 0.035) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(ellipse 75% 55% at 50% 0%, #000 15%, transparent 70%);
+    }
+
+    .app-theme-shell > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .app-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+
+    .app-card:hover {
+        transform: translateY(-4px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .app-card:hover { transform: none; }
+    }
+</style>
