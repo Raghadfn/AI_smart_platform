@@ -1,91 +1,86 @@
-# منصة كلية هندسة المعلوماتية التعليمية
+Informatics Engineering College Educational Platform
+An AI-powered educational platform designed specifically for students of the Informatics Engineering College.
 
-منصة تعليمية مدعومة بالذكاء الاصطناعي لطلاب كلية هندسة المعلوماتية.
+🛠️ Technologies Used
+Backend: Django 5 + Django REST Framework
 
-## التقنيات المستخدمة
+Database: PostgreSQL + pgvector
 
-- **Backend:** Django 5 + Django REST Framework
-- **Database:** PostgreSQL + pgvector
-- **AI:** OpenAI GPT-4
-- **Auth:** JWT (djangorestframework-simplejwt)
-- **Frontend:** HTML Templates + Tailwind CSS (RTL Arabic)
-- **Tasks:** Celery + Redis
+AI: OpenAI GPT-4
 
-## إعداد بيئة التطوير
+Auth: JWT (djangorestframework-simplejwt)
 
-### 1. إنشاء البيئة الافتراضية وتثبيت المتطلبات
+Frontend: HTML Templates + Tailwind CSS (RTL Arabic)
 
-```bash
+Tasks: Celery + Redis
+
+⚙️ Development Environment Setup
+Create Virtual Environment & Install Requirements:
+
+Bash
 python -m venv venv
 venv\Scripts\activate        # Windows
 pip install -r requirements.txt
-```
+Configure Environment Variables:
 
-### 2. إعداد متغيرات البيئة
+Bash
+copy .env.example .env       # Edit values in the .env file
+Run Database Services (PostgreSQL + Redis):
 
-```bash
-copy .env.example .env
-# عدّل القيم في ملف .env
-```
+Option A (Recommended): Docker
 
-### 3. تشغيل قاعدة البيانات (PostgreSQL + Redis)
-
-**الخيار أ: Docker (موصى به)**
-```bash
+Bash
 docker compose up -d
-```
+Option B (Windows without Docker):
 
-**الخيار ب: Windows بدون Docker**
-```powershell
+PowerShell
 .\scripts\setup_postgresql_windows.ps1
-```
+(Then set USE_SQLITE=false in .env to use PostgreSQL).
 
-ثم عيّن `USE_SQLITE=false` في `.env` لاستخدام PostgreSQL.
+Database Migration & Seeding:
 
-### 4. إعداد قاعدة البيانات والهجرات
-
-```bash
+Bash
 python manage.py migrate
-python manage.py setup_database      # تفعيل pgvector, pg_trgm, unaccent
-python manage.py check_database      # فحص الاتصال والامتدادات
-python manage.py seed_curriculum     # بذر السنوات والمواد الدراسية
+python manage.py setup_database      # Enable pgvector, pg_trgm, unaccent
+python manage.py check_database      # Check connection and extensions
+python manage.py seed_curriculum     # Seed academic years and courses
 python manage.py createsuperuser
-```
+Run the Development Server:
 
-### 5. تشغيل الخادم
-
-```bash
+Bash
 python manage.py runserver
-```
+Open your browser at: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
-افتح: http://127.0.0.1:8000/
-
-## هيكل المشروع
-
-```
+📂 Project Structure
+Plaintext
 informatics_platform/
-├── config/           # إعدادات Django
-├── apps/             # التطبيقات
-│   ├── accounts/     # المصادقة والمستخدمون
-│   ├── curriculum/   # السنوات والمواد
-│   ├── lectures/     # المحاضرات
-│   ├── ai_services/  # خدمات الذكاء الاصطناعي
-│   ├── guest/        # وضع الزائر
-│   ├── progress/     # تتبع التقدم
-│   └── notifications/# الإشعارات
-├── templates/        # قوالب HTML
-├── static/           # ملفات ثابتة
-└── media/            # ملفات مرفوعة
-```
+├── config/           # Django settings & configurations
+├── apps/             # Application modules
+│   ├── accounts/     # Authentication & users
+│   ├── curriculum/   # Academic years & courses
+│   ├── lectures/     # Lectures management
+│   ├── ai_services/  # AI integration services
+│   ├── guest/        # Guest mode handling
+│   ├── progress/     # Student progress tracking
+│   └── notifications/# System notifications
+├── templates/        # HTML templates
+├── static/           # Static files (CSS, JS, Images)
+└── media/            # User-uploaded files
+📈 Development Phases
+Step 1: Project Initialization & Setup
 
-## مراحل التطوير
+Step 2: Database Configuration
 
-- [x] الخطوة 1: إعداد المشروع
-- [x] الخطوة 2: إعداد قاعدة البيانات
-- [x] الخطوة 3: نظام المصادقة
-- [x] الخطوة 5: الواجهات والقوالب
-- [x] الخطوة 6: تكامل الذكاء الاصطناعي
-- [ ] الخطوة 7: وضع الزائر
-- [ ] الخطوة 8: الميزات المتقدمة
-- [ ] الخطوة 9: تحسين الواجهة
-- [ ] الخطوة 10: الاختبار والنشر
+Step 3: Authentication System
+
+Step 5: Layouts, UI & Templates
+
+Step 6: AI Integration
+
+Step 7: Guest Mode Implementation
+
+Step 8: Advanced Features
+
+Step 9: UI/UX Optimization
+
+Step 10: Testing & Deployment
